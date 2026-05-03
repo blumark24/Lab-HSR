@@ -1,2 +1,0 @@
-import { supabase } from '../lib/supabase';
-export const makeCrud = (table) => ({ list: () => supabase.from(table).select('*').order('created_at', { ascending: false }), create: (payload) => supabase.from(table).insert(payload).select().single(), update: (id, payload) => supabase.from(table).update(payload).eq('id', id).select().single(), remove: (id) => supabase.from(table).delete().eq('id', id) });

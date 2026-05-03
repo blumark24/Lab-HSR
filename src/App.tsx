@@ -1,2 +1,56 @@
-import { Route, Routes } from 'react-router-dom';import Sidebar from './components/layout/Sidebar';import Topbar from './components/layout/Topbar';import Login from './pages/Login';import Dashboard from './pages/Dashboard';import Users from './pages/Users';import Clients from './pages/Clients';import Tasks from './pages/Tasks';import Finance from './pages/Finance';import Reports from './pages/Reports';import Notifications from './pages/Notifications';import Settings from './pages/Settings';import ProtectedRoute from './routes/ProtectedRoute';import { useAuth } from './hooks/useAuth';
-export default function App(){const {profile,loading}=useAuth(); if(loading) return <div className='p-8'>Loading...</div>;const authed=!!profile;return <Routes><Route path='/login' element={<Login/>}/><Route path='*' element={<ProtectedRoute authed={authed}><div className='min-h-screen p-4 grid grid-cols-[1fr_260px] gap-4'><main className='space-y-4'><Topbar/><Routes><Route path='/' element={<Dashboard/>}/><Route path='/users' element={<Users/>}/><Route path='/clients' element={<Clients/>}/><Route path='/tasks' element={<Tasks/>}/><Route path='/finance' element={<Finance/>}/><Route path='/reports' element={<Reports/>}/><Route path='/notifications' element={<Notifications/>}/><Route path='/settings' element={<Settings/>}/></Routes></main><Sidebar/></div></ProtectedRoute>}/></Routes>}
+import { Navigate, Route, Routes } from 'react-router-dom';
+import Sidebar from './components/layout/Sidebar';
+import Topbar from './components/layout/Topbar';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Users from './pages/Users';
+import Clients from './pages/Clients';
+import Tasks from './pages/Tasks';
+import Finance from './pages/Finance';
+import Reports from './pages/Reports';
+import Notifications from './pages/Notifications';
+import Settings from './pages/Settings';
+import ProtectedRoute from './routes/ProtectedRoute';
+import { useAuth } from './hooks/useAuth';
+
+function AppShell() {
+  return (
+    <div className='min-h-screen p-4 grid grid-cols-[1fr_260px] gap-4'>
+      <main className='space-y-4'>
+        <Topbar />
+        <Routes>
+          <Route path='/' element={<Dashboard />} />
+          <Route path='/users' element={<Users />} />
+          <Route path='/clients' element={<Clients />} />
+          <Route path='/tasks' element={<Tasks />} />
+          <Route path='/finance' element={<Finance />} />
+          <Route path='/reports' element={<Reports />} />
+          <Route path='/notifications' element={<Notifications />} />
+          <Route path='/settings' element={<Settings />} />
+          <Route path='*' element={<Navigate to='/' replace />} />
+        </Routes>
+      </main>
+      <Sidebar />
+    </div>
+  );
+}
+
+export default function App() {
+  const { profile, loading } = useAuth();
+  if (loading) return <div className='p-8'>Loading...</div>;
+
+  const authed = Boolean(profile);
+  return (
+    <Routes>
+      <Route path='/login' element={<Login />} />
+      <Route
+        path='/*'
+        element={
+          <ProtectedRoute authed={authed}>
+            <AppShell />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+}
